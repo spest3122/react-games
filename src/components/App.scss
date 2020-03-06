@@ -1,0 +1,34 @@
+.app{
+  display: flex;
+  background-color: rgb(247,247,247);
+  height: 100vh;
+  .navbar{
+    background-color: #20232a;
+    width: 15%;
+    ul{
+      margin-top: 30px;
+      li{
+        padding: 10px;
+        text-align: center;
+        a{
+          
+          text-decoration: none;
+          color: rgb(255,255,255);
+        }
+        a:hover{
+          border-bottom: 2px solid rgb(97, 218, 251);
+        }
+      }
+    }
+  }
+  .main{
+    margin: 10px;
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    align-content: flex-start
+  }
+}
+
+
+
