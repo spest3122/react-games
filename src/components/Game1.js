@@ -106,36 +106,52 @@ class Game1 extends React.Component {
     }
 
     setSurroundPostion(position){
-        let allPos = getSurroundPostion(position);
         let setBoard = JSON.parse(JSON.stringify(this.state.board));
-        
+        let allPos = getSurroundPostion(position);
+        let result = [];
         let i = 0;
-        
         while(i < allPos.length){
             let current = allPos[i];
+            //current 
             if(allPos[i].length > 0 && setBoard[current[0]][current[1]] === 0){
                 setBoard[current[0]][current[1]] = 1;
             }
             i++;
         }
-        return setBoard;
-        // console.table(setBoard);
-        // if(this.state.count < 1){
-        //     this.setState({ board : setBoard, count: this.state.count+1 }, ()=>{
+        //必須要deep clone
+        result.push(setBoard);
+        i = 0;
+        while(i < allPos.length) {
+            let current = allPos[i];
+            let partPos = getSurroundPostion(current);
+            let j = 0;
+            
+            while(j < partPos.length){
+                let deepCurr = partPos[j];
+                console.log(deepCurr);
                 
-        //         let d = 0;
-        //         while( d < allPos.length ){
-        //             this.setSurroundPostion(allPos[d]);
-        //             d++;
-        //         }
-        //     })
-        // }
+                //current 
+                if(deepCurr.length > 0 && setBoard[deepCurr[0]][deepCurr[1]] === 0){
+                    setBoard[deepCurr[0]][deepCurr[1]] = 1;
+                }
+                j++;
+            }
+            i++;
+        }
+        result.push(setBoard);
         
+        return result;
     }
 
-    finish(ary){
-        console.table(ary);
-        this.setState({board: ary});
+
+    finish(result){
+        
+        this.setState({board: result[0]}, ()=>{
+            setTimeout(()=>{
+                this.setState({board: result[1]})
+            }, 1000)
+            
+        });
     }
 
     render(){
