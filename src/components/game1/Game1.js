@@ -1,24 +1,8 @@
 import React from "react";
 import './Game1.scss'
+import Row from "./Row"
 
 const NUMBER = 9
-
-function Row(props){
-    let col = props.item.map((item, i)=> ( 
-        <Col 
-            class={item === 1 ? 'col_b' : ''}
-            key={'C'+i} 
-            rowIndex={props.index} 
-            colIndex={i}
-            onClick={props.onClick}
-        ></Col> 
-    ));
-    return (
-        <div className="row">
-            {col}
-        </div>
-    )
-}
 
 //生成版面
 function initalBoard(number){
@@ -62,6 +46,7 @@ function getSurroundPostion(position){
                 newPositionY -= 1;
             }
         }
+        
         surround = [newPositionX, newPositionY]
         allPos.push(surround);
         j++;
@@ -69,13 +54,7 @@ function getSurroundPostion(position){
     return allPos;
 }
 
-function Col(props){
-    let r = props.rowIndex;
-    let c = props.colIndex;
-    return (
-        <div className={"col "+props.class} onClick={()=> props.onClick([r, c])}></div>
-    )
-}
+
 
 
 class Game1 extends React.Component {
@@ -101,57 +80,19 @@ class Game1 extends React.Component {
         let setBoard = JSON.parse(JSON.stringify(this.state.board));
         setBoard[ position[0] ][ position[1] ] = 1;
         this.setState({ board: setBoard }, ()=>{
-            this.finish(this.setSurroundPostion(position))
+            let data = this.setSurroundPostion(position);
+            //this.finish(this.setSurroundPostion(position))
         });
     }
 
     setSurroundPostion(position){
-        let setBoard = JSON.parse(JSON.stringify(this.state.board));
-        let allPos = getSurroundPostion(position);
-        let result = [];
-        let i = 0;
-        while(i < allPos.length){
-            let current = allPos[i];
-            //current 
-            if(allPos[i].length > 0 && setBoard[current[0]][current[1]] === 0){
-                setBoard[current[0]][current[1]] = 1;
-            }
-            i++;
-        }
-        //必須要deep clone
-        result.push(setBoard);
-        i = 0;
-        while(i < allPos.length) {
-            let current = allPos[i];
-            let partPos = getSurroundPostion(current);
-            let j = 0;
-            
-            while(j < partPos.length){
-                let deepCurr = partPos[j];
-                console.log(deepCurr);
-                
-                //current 
-                if(deepCurr.length > 0 && setBoard[deepCurr[0]][deepCurr[1]] === 0){
-                    setBoard[deepCurr[0]][deepCurr[1]] = 1;
-                }
-                j++;
-            }
-            i++;
-        }
-        result.push(setBoard);
         
         return result;
     }
 
 
     finish(result){
-        
-        this.setState({board: result[0]}, ()=>{
-            setTimeout(()=>{
-                this.setState({board: result[1]})
-            }, 1000)
-            
-        });
+
     }
 
     render(){
