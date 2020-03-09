@@ -2,7 +2,7 @@ import React from "react";
 import './Game1.scss'
 import Row from "./Row"
 
-const NUMBER = 9
+const NUMBER = 15
 
 //生成版面
 function initalBoard(number){
@@ -21,7 +21,7 @@ function initalBoard(number){
     return ary;
 }
 //取得周圍的黑點
-function getSurroundPostion(position){
+function getSurroundPostion(position, board){
     let j = 0;
     let allPos = [] // 0 上 1 右 2 下 3 左
     let maxLimit = NUMBER - 1;
@@ -46,7 +46,6 @@ function getSurroundPostion(position){
                 newPositionY -= 1;
             }
         }
-        
         surround = [newPositionX, newPositionY]
         allPos.push(surround);
         j++;
@@ -54,6 +53,10 @@ function getSurroundPostion(position){
     return allPos;
 }
 
+
+function deepClone(obj){
+    return JSON.parse(JSON.stringify(obj))
+}
 
 
 
@@ -63,11 +66,11 @@ class Game1 extends React.Component {
         this.state = {
             board : [],
             count: 0,
-            finalCount: []
+            finalCount: [],
+            timeLimit: 500
         }
         this.trigger = this.trigger.bind(this);
         this.setSurroundPostion = this.setSurroundPostion.bind(this);
-        this.finish = this.finish.bind(this);
     }
 
     //lifecycle
@@ -77,16 +80,65 @@ class Game1 extends React.Component {
 
     //設置黑點
     trigger(position){
-        let setBoard = JSON.parse(JSON.stringify(this.state.board));
+        let setBoard = deepClone(this.state.board);
         setBoard[ position[0] ][ position[1] ] = 1;
         this.setState({ board: setBoard }, ()=>{
-            // let data = this.setSurroundPostion(position);
+            setTimeout(()=>{
+                this.setSurroundPostion(position);
+            }, this.state.timeLimit)
         });
     }
 
     setSurroundPostion(position){
-        let result = [];
-        return result;
+        let setBoard = deepClone(this.state.board);
+        let mainNumber = NUMBER;
+        let hasZero = [];
+        let i = 0;
+        let j = 0;
+        let resultPlace = [];
+        while(i < mainNumber){
+            if(setBoard[i].indexOf(0) < 0){
+                hasZero.push(true)
+            }
+            while(j < mainNumber){
+                if(setBoard[i][j] === 1){
+                    let four = getSurroundPostion([i, j]);
+                    if(setBoard[four[0][0]][four[0][1]] === 0){
+                        resultPlace.push(four[0][0] +","+ four[0][1]);
+                    }
+                    if(setBoard[four[1][0]][four[1][1]] === 0){
+                        resultPlace.push(four[1][0] +","+ four[1][1]);
+                    }
+                    if(setBoard[four[2][0]][four[2][1]] === 0){
+                        resultPlace.push(four[2][0] +","+ four[2][1]);
+                    }
+                    if(setBoard[four[3][0]][four[3][1]] === 0){
+                        resultPlace.push(four[3][0] +","+ four[3][1]);
+                    }
+                }
+                j++;
+            }
+            i++;
+            j = 0;
+        }
+        let s = deepClone(setBoard);
+        let d = 0;
+        while(d < resultPlace.length){
+            let a = resultPlace[d].split(",");
+            s[a[0]][a[1]] = 1;
+            d++;
+        }
+        this.setState({board: s})
+        if(hasZero.length >= NUMBER){
+            console.log("done");
+            
+            return;
+        }else{
+            setTimeout(()=>{
+                this.setSurroundPostion(position);
+            }, this.state.timeLimit)
+            return;
+        }
     }
 
     render(){
