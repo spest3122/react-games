@@ -80,19 +80,13 @@ class Game1 extends React.Component {
         let setBoard = JSON.parse(JSON.stringify(this.state.board));
         setBoard[ position[0] ][ position[1] ] = 1;
         this.setState({ board: setBoard }, ()=>{
-            let data = this.setSurroundPostion(position);
-            //this.finish(this.setSurroundPostion(position))
+            // let data = this.setSurroundPostion(position);
         });
     }
 
     setSurroundPostion(position){
-        
+        let result = [];
         return result;
-    }
-
-
-    finish(result){
-
     }
 
     render(){
