@@ -1,0 +1,35 @@
+.item {
+    background-color: rgb(255,255,255);
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    transition: box-shadow 0.5s;
+    &:hover{
+        box-shadow: 3px 3px 1px rgba(0,0,0, 0.3);
+    }
+    .editButton, .deleteButton, .doneButton{
+        display: inline-block;
+        cursor: pointer;
+    }
+    .editButton, .doneButton{
+        margin-left: 30px;
+        margin-right: 10px;
+    }
+}
+.middleLine{
+    text-decoration: line-through;
+}
+.listData{
+    padding: 10px;
+}
+
+.addInput{
+    margin: 10px 0 0 0;
+    input{
+        margin-right: 10px;
+        padding: 5px;
+    }
+    button{
+        padding: 5px;
+    }
+}
