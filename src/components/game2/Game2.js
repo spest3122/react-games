@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { createBoard } from '../redux/actions'
+import { createBoard, startMaze, roleMove } from '../redux/actions'
 import Role from "./Role";
 import './Game2.scss';
 const NUMBER = 5;
@@ -25,6 +25,16 @@ function initalBoard(number){
 class Game2 extends React.Component {
     componentDidMount(){
         this.props.createBoard(this.setMap());
+    }
+
+    async start(){
+        await this.props.startMaze();
+        while(this.props.start){
+            console.log(this.props.start);
+            this.props.startMaze();
+        }
+        
+        this.props.roleMove([3,3]);
     }
 
     //設置迷宮
@@ -55,14 +65,12 @@ class Game2 extends React.Component {
     }
     
     render(){
-        console.log(this.props);
-        
         let map = this.props.board.map((row, i) => (
             <div className="row" key={'row'+i}>
                 {
                     row.map((col, colIndex)=>{
                         let style = "col ";
-                        let role = (i === this.props.rolePosition[0] && colIndex === this.props.rolePosition[1]) ? <Role /> : "";
+                        let role = (i === this.props.rolePosition[0] && colIndex === this.props.rolePosition[1]) ? <Role onClick={()=> this.start()} /> : "";
                         if(col === 2){
                             style += "block ";
                         }
@@ -84,12 +92,19 @@ class Game2 extends React.Component {
 
 const mapStateToProps = (state) => ({
     board: state.game2.board,
-    rolePosition: state.game2.rolePosition
+    rolePosition: state.game2.rolePosition,
+    start: state.game2.start
 })
 
 const mapDispatchToProps = (dispatch) => ({
     createBoard: (board)=>{
         dispatch(createBoard(board))
+    },
+    startMaze: () =>{
+        dispatch(startMaze())
+    },
+    roleMove: (move)=>{
+        dispatch(roleMove(move))
     }
 })
 
