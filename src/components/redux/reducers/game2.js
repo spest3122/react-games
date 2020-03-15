@@ -2,8 +2,8 @@ import * as actionType from '../actions/actionTypes';
 
 const initialState = {
     board: [],
-    rolePosition: [4, 3],
-    start: false,
+    rolePosition: [3, 3],
+    history: [],
 }
 
 const game2 = (state = initialState, action) => {
@@ -13,15 +13,17 @@ const game2 = (state = initialState, action) => {
                 ...state, 
                 board: action.board
             });
-        case actionType.START_MAZE:
-            return Object.assign({}, state, {
-                ...state, 
-                start: !state.start
-            });
         case actionType.ROLE_MOVE:
             return Object.assign({}, state, {
                 ...state, 
                 rolePosition: action.position
+            });
+        case actionType.ROLE_HISTORY:
+            let newAry = [...state.history];
+            newAry.push(action.history);
+            return Object.assign({}, state, {
+                ...state, 
+                history: newAry
             });
         default:
             return state;

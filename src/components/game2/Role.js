@@ -5,7 +5,8 @@ class Role extends React.Component {
     render(){
         return(
             <div className="role" onClick={this.props.onClick}>
-                <img src={dog} alt={"dog"}/> 
+                <div className="shadow">Start</div>
+                <img src={dog} className="avatar" alt={"dog"}/> 
             </div>
         )
     }

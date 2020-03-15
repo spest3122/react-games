@@ -2,7 +2,7 @@ import React from "react";
 import './Game1.scss'
 import Row from "./Row"
 
-const NUMBER = 15
+const NUMBER = 13
 
 //生成版面
 function initalBoard(number){

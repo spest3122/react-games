@@ -1,9 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { createBoard, startMaze, roleMove } from '../redux/actions'
+import { createBoard, roleMove, roleHistory } from '../redux/actions'
 import Role from "./Role";
 import './Game2.scss';
 const NUMBER = 5;
+const SECOND = 1000; //一秒
 
 //生成版面
 function initalBoard(number){
@@ -22,19 +23,34 @@ function initalBoard(number){
     return ary;
 }
 
+
 class Game2 extends React.Component {
+    //設置場地
     componentDidMount(){
         this.props.createBoard(this.setMap());
     }
 
     async start(){
-        await this.props.startMaze();
-        while(this.props.start){
-            console.log(this.props.start);
-            this.props.startMaze();
+        let gameStatus = true;
+        await this.props.roleHistory(Object.assign([], this.props.rolePosition));
+        await this.dogMove();
+    }
+    
+    async dogMove(){
+        let board = await this.props.board;
+        let currentPos = await this.props.rolePosition;
+            
+            // let top = [currentPos[0]-1, currentPos[1]];
+            // let right = [currentPos[0], currentPos[1]+1];
+            // let bottom = [currentPos[0]+1, currentPos[1]];
+        let left = [currentPos[0], currentPos[1]-1];
+        if(board[left[0]][left[1]] < 2){
+            await this.props.roleMove(left);
+            await this.props.roleHistory(left);
+            return setTimeout(()=> this.dogMove(), SECOND)
+        }else{
+            return;
         }
-        
-        this.props.roleMove([3,3]);
     }
 
     //設置迷宮
@@ -93,18 +109,18 @@ class Game2 extends React.Component {
 const mapStateToProps = (state) => ({
     board: state.game2.board,
     rolePosition: state.game2.rolePosition,
-    start: state.game2.start
+    history: state.game2.history,
 })
 
 const mapDispatchToProps = (dispatch) => ({
     createBoard: (board)=>{
         dispatch(createBoard(board))
     },
-    startMaze: () =>{
-        dispatch(startMaze())
-    },
     roleMove: (move)=>{
         dispatch(roleMove(move))
+    },
+    roleHistory: (history)=>{
+        dispatch(roleHistory(history))
     }
 })
 
