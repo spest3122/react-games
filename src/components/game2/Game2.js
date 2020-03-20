@@ -37,13 +37,26 @@ class Game2 extends React.Component {
     }
     
     async dogMove(){
+        //地板
         let board = await this.props.board;
+        //當前的位置
         let currentPos = await this.props.rolePosition;
-            
-            // let top = [currentPos[0]-1, currentPos[1]];
-            // let right = [currentPos[0], currentPos[1]+1];
-            // let bottom = [currentPos[0]+1, currentPos[1]];
-        let left = [currentPos[0], currentPos[1]-1];
+        //方向 - 指向某個方向前進則不在比對相對的方向
+        let direct = 0;  //1 上 2 右 3 下 4 左
+        /**
+         * 1. 先判斷上右下左的值可以行走的方向
+         * 2. 往版值為0的方向走，並順便儲存行走的方向
+         * 3. 相反方向的值不判斷判斷三向的值有零的繼續行走
+         * 3. 遇到岔路先以左邊方向為優先順序行走並更改方向值為左
+         * 4. 往左移動則更換方向與移動位置
+         * 5. 如果三向的值都為牆壁則往返方向移動
+         */
+        // let top = [currentPos[0]-1, currentPos[1]];
+        // let right = [currentPos[0], currentPos[1]+1];
+        // let bottom = [currentPos[0]+1, currentPos[1]];
+        // let left = [currentPos[0], currentPos[1]-1];
+
+
         if(board[left[0]][left[1]] < 2){
             await this.props.roleMove(left);
             await this.props.roleHistory(left);
