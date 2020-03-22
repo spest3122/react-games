@@ -2,8 +2,9 @@ import * as actionType from '../actions/actionTypes';
 
 const initialState = {
     board: [],
-    rolePosition: [3, 3],
+    rolePosition: [4, 3],
     history: [],
+    direct: '',
 }
 
 const game2 = (state = initialState, action) => {
@@ -24,6 +25,11 @@ const game2 = (state = initialState, action) => {
             return Object.assign({}, state, {
                 ...state, 
                 history: newAry
+            });
+        case actionType.SET_DIRECT:
+            return Object.assign({}, state, {
+                ...state, 
+                direct: action.direct
             });
         default:
             return state;

@@ -14,3 +14,8 @@ export const roleHistory = history => ({
     type: actionType.ROLE_HISTORY,
     history: history,
 })
+
+export const setDirect = direct => ({
+    type: actionType.SET_DIRECT,
+    direct: direct,
+})

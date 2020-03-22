@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { createBoard, roleMove, roleHistory } from '../redux/actions'
+import { createBoard, roleMove, roleHistory, setDirect } from '../redux/actions'
 import Role from "./Role";
 import './Game2.scss';
 const NUMBER = 5;
@@ -42,7 +42,9 @@ class Game2 extends React.Component {
         //當前的位置
         let currentPos = await this.props.rolePosition;
         //方向 - 指向某個方向前進則不在比對相對的方向
-        let direct = 0;  //1 上 2 右 3 下 4 左
+        let direct = await this.props.direct;  //1 左 2 上 3 右 4 下
+        let canPass = [];
+        let move = [];
         /**
          * 1. 先判斷上右下左的值可以行走的方向
          * 2. 往版值為0的方向走，並順便儲存行走的方向
@@ -50,16 +52,51 @@ class Game2 extends React.Component {
          * 3. 遇到岔路先以左邊方向為優先順序行走並更改方向值為左
          * 4. 往左移動則更換方向與移動位置
          * 5. 如果三向的值都為牆壁則往返方向移動
+         * 
+         * 每個recursive 都是一次的移動，所以決定當下移動的點就可以了
          */
-        // let top = [currentPos[0]-1, currentPos[1]];
-        // let right = [currentPos[0], currentPos[1]+1];
-        // let bottom = [currentPos[0]+1, currentPos[1]];
-        // let left = [currentPos[0], currentPos[1]-1];
+        let left = [currentPos[0], currentPos[1]-1];
+        let top = [currentPos[0]-1, currentPos[1]];
+        let right = [currentPos[0], currentPos[1]+1];
+        let bottom = [currentPos[0]+1, currentPos[1]];
+        if(left[1] < 0){
+            canPass.push(2)
+        }else{
+            canPass.push(board[left[0]][left[1]])
+        }
 
+        if(top[0] < 0){
+            canPass.push(2)
+        }else{
+            canPass.push(board[top[0]][top[1]])
+        }
 
-        if(board[left[0]][left[1]] < 2){
-            await this.props.roleMove(left);
-            await this.props.roleHistory(left);
+        if(right[1] >= 5){
+            canPass.push(2)
+        }else{
+            canPass.push(board[right[0]][right[1]])
+        }
+
+        if(bottom[0] >= 5){
+            canPass.push(2)
+        }else{
+            canPass.push(board[bottom[0]][bottom[1]])
+        }
+        direct = canPass.indexOf(0);
+        if(direct === 0 && direct !== 2){
+            move.push(left[0], left[1]);
+        }else if(direct === 1 && direct !== 3){
+            move.push(top[0], top[1]);
+        }else if(direct === 2 && direct !== 0){
+            move.push(right[0], right[1]);
+        }else if(direct === 3  && direct !== 1){
+            move.push(bottom[0], bottom[1]);
+        }
+        
+
+        if(board[move[0]][move[1]] < 2){
+            await this.props.roleMove(move);
+            await this.props.roleHistory(move);
             return setTimeout(()=> this.dogMove(), SECOND)
         }else{
             return;
@@ -123,6 +160,7 @@ const mapStateToProps = (state) => ({
     board: state.game2.board,
     rolePosition: state.game2.rolePosition,
     history: state.game2.history,
+    direct: state.game2.direct
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -134,7 +172,10 @@ const mapDispatchToProps = (dispatch) => ({
     },
     roleHistory: (history)=>{
         dispatch(roleHistory(history))
-    }
+    },
+    setDirect: (direct)=>{
+        dispatch(setDirect(direct))
+    },
 })
 
 
