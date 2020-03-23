@@ -4,7 +4,7 @@ import { createBoard, roleMove, roleHistory, setDirect } from '../redux/actions'
 import Role from "./Role";
 import './Game2.scss';
 const NUMBER = 5;
-const SECOND = 1000; //一秒
+const SECOND = 500; //一秒
 
 //生成版面
 function initalBoard(number){
@@ -31,8 +31,7 @@ class Game2 extends React.Component {
     }
 
     async start(){
-        let gameStatus = true;
-        await this.props.roleHistory(Object.assign([], this.props.rolePosition));
+        // await this.props.roleHistory(Object.assign([], this.props.rolePosition));
         await this.dogMove();
     }
     
@@ -41,62 +40,60 @@ class Game2 extends React.Component {
         let board = await this.props.board;
         //當前的位置
         let currentPos = await this.props.rolePosition;
+        if(currentPos[0] === 0 && currentPos[1] === 1){
+            alert('You Finish')
+            return 
+        }
         //方向 - 指向某個方向前進則不在比對相對的方向
-        let direct = await this.props.direct;  //1 左 2 上 3 右 4 下
-        let canPass = [];
+        let direct = await this.props.direct;  //0 左 1 上 2 右 3 下
         let move = [];
-        /**
-         * 1. 先判斷上右下左的值可以行走的方向
-         * 2. 往版值為0的方向走，並順便儲存行走的方向
-         * 3. 相反方向的值不判斷判斷三向的值有零的繼續行走
-         * 3. 遇到岔路先以左邊方向為優先順序行走並更改方向值為左
-         * 4. 往左移動則更換方向與移動位置
-         * 5. 如果三向的值都為牆壁則往返方向移動
-         * 
-         * 每個recursive 都是一次的移動，所以決定當下移動的點就可以了
-         */
-        let left = [currentPos[0], currentPos[1]-1];
-        let top = [currentPos[0]-1, currentPos[1]];
-        let right = [currentPos[0], currentPos[1]+1];
-        let bottom = [currentPos[0]+1, currentPos[1]];
-        if(left[1] < 0){
-            canPass.push(2)
-        }else{
-            canPass.push(board[left[0]][left[1]])
-        }
-
-        if(top[0] < 0){
-            canPass.push(2)
-        }else{
-            canPass.push(board[top[0]][top[1]])
-        }
-
-        if(right[1] >= 5){
-            canPass.push(2)
-        }else{
-            canPass.push(board[right[0]][right[1]])
-        }
-
-        if(bottom[0] >= 5){
-            canPass.push(2)
-        }else{
-            canPass.push(board[bottom[0]][bottom[1]])
-        }
-        direct = canPass.indexOf(0);
-        if(direct === 0 && direct !== 2){
-            move.push(left[0], left[1]);
-        }else if(direct === 1 && direct !== 3){
-            move.push(top[0], top[1]);
-        }else if(direct === 2 && direct !== 0){
-            move.push(right[0], right[1]);
-        }else if(direct === 3  && direct !== 1){
-            move.push(bottom[0], bottom[1]);
-        }
+        
+        let left = currentPos[1]-1;
+        let top = currentPos[0]-1;
+        let right = currentPos[1]+1;
+        let bottom = currentPos[0]+1;
         
 
+        if(left >= 0 && board[currentPos[0]][left] < 2  && move.length === 0 && direct !== 2){
+            move.push(currentPos[0], left)
+            direct = 0
+        }
+
+        if(top >= 0 && board[top][currentPos[1]] < 2 && move.length === 0 && direct !== 3){
+            move.push(top, currentPos[1])
+            direct = 1
+        }
+
+        if(right < 5 && board[currentPos[0]][right] < 2 && move.length === 0 && direct !== 0){
+            move.push(currentPos[0], right)
+            direct = 2
+        }
+
+        if(bottom < 5 && board[bottom][currentPos[1]] < 2 && move.length === 0  && direct !== 1){
+            move.push(bottom, currentPos[1])
+            direct = 3
+        }
+
+        if(move.length < 1){
+            if(direct === 0){
+                direct = 2
+            }else if(direct === 1){
+                direct = 3
+            }else if(direct === 2){
+                direct = 0
+            }else if(direct === 3){
+                direct = 1
+            }
+            await this.props.setDirect(direct);
+            return this.dogMove();
+        }
+        
+        
+        
         if(board[move[0]][move[1]] < 2){
             await this.props.roleMove(move);
-            await this.props.roleHistory(move);
+            // await this.props.roleHistory(move);
+            await this.props.setDirect(direct);
             return setTimeout(()=> this.dogMove(), SECOND)
         }else{
             return;
