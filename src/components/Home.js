@@ -12,7 +12,7 @@ class Home extends React.Component{
             <>
             {
                 ary.map((item, i)=>(
-                    <div className="card" key={'game'+i}></div>
+                    <div className="card" key={'game'+i}>
                         <Link to={item.path}>
                         <div className="card__header">
                             <img src={logo} alt="cardHeader" />
