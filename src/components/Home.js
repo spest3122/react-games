@@ -6,14 +6,13 @@ import { Link } from "react-router-dom";
 
 class Home extends React.Component{
     render(){
-        const ary = routes;
-        //從第二筆陣列開始取值
-        ary.splice(0,1);
+        const ary = JSON.parse(JSON.stringify(routes));
+        ary.splice(0,1)
         return (
             <>
             {
                 ary.map((item, i)=>(
-                    <div className="card" key={'game'+i}>
+                    <div className="card" key={'game'+i}></div>
                         <Link to={item.path}>
                         <div className="card__header">
                             <img src={logo} alt="cardHeader" />
