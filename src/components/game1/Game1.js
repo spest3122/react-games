@@ -2,8 +2,10 @@ import React from "react";
 import './Game1.scss'
 import Row from "./Row"
 
+//版面的格數
 const NUMBER = 13
 
+//TODO 外層的function 在切一個js 做共用引入
 //生成版面
 function initalBoard(number){
     let ary = [];
@@ -20,8 +22,9 @@ function initalBoard(number){
     }
     return ary;
 }
+
 //取得周圍的黑點
-function getSurroundPostion(position, board){
+function getSurroundPostion(position){
     let j = 0;
     let allPos = [] // 0 上 1 右 2 下 3 左
     let maxLimit = NUMBER - 1;
@@ -58,15 +61,11 @@ function deepClone(obj){
     return JSON.parse(JSON.stringify(obj))
 }
 
-
-
 class Game1 extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             board : [],
-            count: 0,
-            finalCount: [],
             timeLimit: 500
         }
         this.trigger = this.trigger.bind(this);
@@ -128,10 +127,10 @@ class Game1 extends React.Component {
             s[a[0]][a[1]] = 1;
             d++;
         }
+        //TODO 這層setState 下層雖然用setTimeout 但是是否有非同步的疑慮
         this.setState({board: s})
         if(hasZero.length >= NUMBER){
             console.log("done");
-            
             return;
         }else{
             setTimeout(()=>{

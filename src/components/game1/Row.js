@@ -1,5 +1,6 @@
 import React from "react";
 import Col from "./Col"
+
 function Row(props){
     let col = props.item.map((item, i)=> ( 
         <Col 
