@@ -6,19 +6,19 @@ import './Game3.scss'
 //Pong 遊戲
 const Game3 = ()=>{
     const initalPosition = 100  //初始位置
-    const maxRoleBorder = 200  //角色下邊界
-    const minRoleBorder = 0    //角色上邊界
-    const maxBallBorder = 470  //球最大邊界
-    const minBallBorder = 10   //球最小邊界
-    const moveGrid = 10        //移動格數
-    const timeLimit = 100  //時間限制
-    const [ballPosition, setBallPosition] = useState({x: 40, y: 100})
+    const backgroundWidth = 500  //背景寬度
+    const backgroundHeight = 300  //背景高度度
+    const roleHeight = 100      //角色高度
+    const maxRoleBorder = 200   //角色下邊界
+    const minRoleBorder = 0     //角色上邊界
+    const moveGrid = 10         //移動格數
+    const timeLimit = 50       //移動速率
+    const [ballPosition, setBallPosition] = useState({x: 40, y: 100})  //右下(480,280) 左上(0,0) 右上(480,0) 左下(0, 280)
     const [direct, setDirect] = useState('RB')//T 上 R 右 B 下 L左 球行進的方向
 
     const ballPath = () => {
         let x = ballPosition.x  //球的X座標
         let y = ballPosition.y  //球的Y座標
-        
         
         switch (direct) {
             //右下
@@ -45,26 +45,34 @@ const Game3 = ()=>{
                 break;
         }
         
-        //右上
-        if(x === 230 && y === 290){
-            setDirect('RT')
-            return
-        //左上
-        }else if(x < 0 && y < 0){
-            setDirect('LT')
-        //左下
-        }else if(x < 0 && y > 0){
-            setDirect('LB')
-        //右下
-        }else if(x > 0 && y > 0){
-            setDirect('RB')
+        if(y === 280){
+            if(direct === 'RB'){
+                setDirect('RT')
+            }else if(direct === 'LB'){
+                setDirect('LT')
+            }
+        }else if(y === 0){
+            if(direct === 'RT'){
+                setDirect('RB')
+            }else if(direct === 'LT'){
+                setDirect('LB')
+            }
+        }else if(x === 480){
+            if(direct === 'RT'){
+                setDirect('LT')
+            }else if(direct === 'RB'){
+                setDirect('LB')
+            }
+        }else if(x === 0){
+            if(direct === 'LT'){
+                setDirect('RT')
+            }else if(direct === 'LB'){
+                setDirect('RB')
+            }
         }
         
-        console.log(x, y, direct);
-        
-        
         setTimeout(() => {
-            setBallPosition(prev=> ({x: x, y: y}))
+            setBallPosition({x: x, y: y})
         }, timeLimit);
 
     }
@@ -109,15 +117,15 @@ const Game3 = ()=>{
 
     return (
         <div className="game3">
-            <div className="backGround">
-                <div className="role left" style={{top: leftMove}}></div>
+            <div className="backGround" style={{ width: backgroundWidth, height: backgroundHeight }}>
+                <div className="role left" style={{top: leftMove, height: roleHeight }}></div>
                 <div className="ball" style={{ left: ballPosition.x, top: ballPosition.y }}></div>
                 <div className="dotted">
                     <span></span>
                     <span></span>
                     <span></span>
                 </div>
-                <div className="role right" style={{top: RightMove}}></div>
+                <div className="role right" style={{top: RightMove, height: roleHeight}}></div>
             </div>
         </div>
     )
