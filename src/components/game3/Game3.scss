@@ -1,5 +1,4 @@
 .game3{
-    $ballSize: 20px;
     width: 100%;
     height: 100%;
     .backGround{
@@ -14,8 +13,6 @@
         // transform: translateY(100%);
     }
     .ball{
-        width: $ballSize;
-        height: $ballSize;
         background-color: white;
         border-radius: 50%;
         position: absolute;

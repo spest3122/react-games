@@ -13,6 +13,11 @@ const Game3 = ()=>{
     const minRoleBorder = 0     //角色上邊界
     const moveGrid = 10         //移動格數
     const timeLimit = 50       //移動速率
+    const ballSize = 20;       //球的尺寸
+    const leftBorder = 0;
+    const rightBorder = backgroundHeight - ballSize;
+    const topBorder = 0;
+    const bottomBorder = backgroundWidth - ballSize;
     const [ballPosition, setBallPosition] = useState({x: 40, y: 100})  //右下(480,280) 左上(0,0) 右上(480,0) 左下(0, 280)
     const [direct, setDirect] = useState('RB')//T 上 R 右 B 下 L左 球行進的方向
 
@@ -45,25 +50,25 @@ const Game3 = ()=>{
                 break;
         }
         
-        if(y === 280){
+        if(y === rightBorder){
             if(direct === 'RB'){
                 setDirect('RT')
             }else if(direct === 'LB'){
                 setDirect('LT')
             }
-        }else if(y === 0){
+        }else if(y === leftBorder){
             if(direct === 'RT'){
                 setDirect('RB')
             }else if(direct === 'LT'){
                 setDirect('LB')
             }
-        }else if(x === 480){
+        }else if(x === bottomBorder){
             if(direct === 'RT'){
                 setDirect('LT')
             }else if(direct === 'RB'){
                 setDirect('LB')
             }
-        }else if(x === 0){
+        }else if(x === topBorder){
             if(direct === 'LT'){
                 setDirect('RT')
             }else if(direct === 'LB'){
@@ -119,7 +124,7 @@ const Game3 = ()=>{
         <div className="game3">
             <div className="backGround" style={{ width: backgroundWidth, height: backgroundHeight }}>
                 <div className="role left" style={{top: leftMove, height: roleHeight }}></div>
-                <div className="ball" style={{ left: ballPosition.x, top: ballPosition.y }}></div>
+                <div className="ball" style={{ left: ballPosition.x, top: ballPosition.y, width: ballSize, height: ballSize }}></div>
                 <div className="dotted">
                     <span></span>
                     <span></span>
